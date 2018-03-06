@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace StringParallelProcessing
+namespace StringParallelProcessing2
 {
     class Program
     {
@@ -13,14 +16,14 @@ namespace StringParallelProcessing
 
             int logicalProcessors = Environment.ProcessorCount;
 
-            int items = 100007; //100,000
+            int items = 100000; //100,000
             int iterations = 100;
             Stopwatch stopwatch = new Stopwatch();
 
             StringProcessor stringProcessor = new StringProcessor();
             List<string> testData = GenerateTestData(items);
 
-            /* Console.WriteLine("Single Threaded: ");
+            /*Console.WriteLine("Single Threaded: ");
             stringProcessor.ProcessStrings(testData); //Warmup
             for (int i = 0; i < iterations; i++)
             {
@@ -62,7 +65,7 @@ namespace StringParallelProcessing
                 Console.SetCursorPosition(4, 1);
                 Console.Write(j + 1);
                 stopwatch.Start();
-                stringProcessor.ProcessStringsParallel2(testData, 8);
+                stringProcessor.ProcessStringsParallel(testData, 8);
                 stopwatch.Stop();
             }
             Console.WriteLine();
@@ -71,12 +74,12 @@ namespace StringParallelProcessing
             Console.Clear();
 
 
-            Console.WriteLine($"Single Threaded: {processingTime.TotalMilliseconds/iterations}ms Per Loop");
-            foreach(var time in parallelProcessingTimes)
+            //Console.WriteLine($"Single Threaded: {processingTime.TotalMilliseconds / iterations}ms Per Loop");
+            foreach (var time in parallelProcessingTimes)
             {
                 Console.WriteLine($"Multi Threaded {time.Key} Processors: {time.Value.TotalMilliseconds / iterations}ms Per Loop");
             }
-            
+
 
             Console.ReadLine();
         }
@@ -84,7 +87,7 @@ namespace StringParallelProcessing
         static List<string> GenerateTestData(int iterations)
         {
             List<string> output = new List<string>();
-            for(int i = 0; i < iterations; i++)
+            for (int i = 0; i < iterations; i++)
             {
                 output.Add(" This is a test string. /n With new lines. /n Seperating it. /n");
             }
