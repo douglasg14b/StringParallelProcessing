@@ -112,6 +112,42 @@ namespace StringParallelProcessing
             //return output;
         }
 
+        public char[][] ProcessStringsParallel3(List<string> input, int? maxParallelism = null)
+        {
+            char[][] output = new char[input.Count][];
+            int count = maxParallelism ?? 1;
+            int segmentSize = (int)input.Count / count;
+            Task<char[][]>[] tasks = new Task<char[][]>[count];
+
+
+            for (int i = 0; i < count; i++)
+            {
+                int segmentsStart = segmentSize * i;
+                int segmentsEnd = segmentSize * (i + 1);
+                if (i == count - 1)
+                {
+                    segmentsEnd += input.Count - segmentsEnd - 1;
+                }
+                Task<char[][]> newTask = Task.Factory.StartNew<char[][]>(() =>
+                {
+                    char[][] taskOutput = new char[segmentsEnd - segmentsStart + 1][];
+                    int length = 1;
+                    int localIndex = 0;
+                    for (int j = segmentsStart; j <= segmentsEnd; j++)
+                    {
+                        taskOutput[localIndex] = ProcessString4(input[j], ref length);
+                        localIndex++;
+                    }
+                    return taskOutput;
+                });
+                tasks[i] = newTask;
+            }
+
+            Task.WaitAll(tasks);
+
+            return output;
+        }
+
         private ParallelOptions GetParallelOptions(int? maxParallelism)
         {
             if(maxParallelism == null)
